@@ -1,0 +1,82 @@
+#!/bin/sh
+#
+# JF Gigand 2013-02-24: /usr/local/share/redmine-2.2/spawn-rails
+# JF Gigand 2013-09-20: merged into /etc/init.d/spawn-fcgi-redmine
+# JF Gigand 2014-12-21: integrated into Gitted SYSCONF
+#
+# Inspiré de : http://www.skullgoth.fr/93-nginx-et-php-fastcgi-sur-une-debian-6.html
+#
+# http://linux.die.net/man/1/spawn-fcgi
+
+### BEGIN INIT INFO
+# Provides:          spawn-fcgi-redmine
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts FastCGI spawner for Redmine
+# Description:       starts FastCGI spawner for Redmine
+### END INIT INFO
+
+USER=www-data
+GROUP=www-data
+NAME="spawn-fcgi-redmine"
+DESC="Redmine FastCGI spawner"
+
+FASTCGI_BIND_ADDR=127.0.0.1
+FASTCGI_BIND_PORT=9000
+FASTCGI_SCRIPT_PATH=/usr/share/redmine/public/dispatch.fcgi
+FASTCGI_PIDFILE=/var/run/redmine.production.pid
+FASTCGI_CHILDREN=3
+FASTCGI_CHDIR=/usr/share/redmine
+# FASTCGI_CHDIR=/var/lib/redmine
+
+set -e
+
+. /lib/lsb/init-functions
+
+start() {
+    log_daemon_msg "Starting $DESC" "spawn-fcgi"
+    RAILS_ENV="production" X_DEBIAN_SITEID="default" RAILS_RELATIVE_URL_ROOT="" \
+        /usr/bin/spawn-fcgi -d $FASTCGI_CHDIR -a $FASTCGI_BIND_ADDR -p $FASTCGI_BIND_PORT \
+        -P $FASTCGI_PIDFILE -F $FASTCGI_CHILDREN -u $USER -g $GROUP -- $FASTCGI_SCRIPT_PATH
+    # echo     RAILS_ENV="production" X_DEBIAN_SITEID="default" RAILS_RELATIVE_URL_ROOT="" \
+    #     /usr/bin/spawn-fcgi -d $FASTCGI_CHDIR -a $FASTCGI_BIND_ADDR -p $FASTCGI_BIND_PORT \
+    #     -P $FASTCGI_PIDFILE -F $FASTCGI_CHILDREN -u $USER -g $GROUP -- $FASTCGI_SCRIPT_PATH
+
+    log_end_msg $?
+}
+
+stop() {
+    echo "Stopping $DESC... "
+    log_daemon_msg "Stopping $DESCR" "spawn-fcgi"
+
+    start-stop-daemon --stop --user $USER --exec /usr/bin/ruby
+    log_end_msg $?
+}
+
+status() {
+    echo "Status of $DESC... "
+    start-stop-daemon --status --user $USER --exec /usr/bin/ruby
+    log_end_msg $?
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+        stop
+	;;
+    restart)
+	stop
+	start
+	;;
+    status)
+	status
+	;;
+    *)
+	echo "Usage: $NAME {start|stop|restart|status}" >&2
+	exit 1
+	;;
+esac
