@@ -9,11 +9,13 @@
 ### PULL
 git subtree pull -P sysconf/sysconf.base ggit:sysconf.base.git master
 git subtree pull -P sysconf/sysconf.gitted ggit:sysconf.gitted.git master
+git subtree pull -P sysconf/sysconf.gitted.mysql ggit:sysconf.gitted.mysql.git master
 git subtree pull -P sysconf/sysconf.gitted.redmine ggit:sysconf.gitted.redmine.git master
 
 ### PUSH
 git subtree push -P sysconf/sysconf.base ggit:sysconf.base.git master
 git subtree push -P sysconf/sysconf.gitted ggit:sysconf.gitted.git master
+git subtree push -P sysconf/sysconf.gitted.mysql ggit:sysconf.gitted.mysql.git master
 git subtree push -P sysconf/sysconf.gitted.redmine ggit:sysconf.gitted.redmine.git master
 
 
@@ -22,12 +24,14 @@ git subtree push -P sysconf/sysconf.gitted.redmine ggit:sysconf.gitted.redmine.g
 ### PULL
 git subtree pull -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
 git subtree pull -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
+git subtree pull -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
 git subtree pull -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
 
 ### PUSH
 
 git subtree push -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
 git subtree push -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
+git subtree push -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
 git subtree push -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
 
 
