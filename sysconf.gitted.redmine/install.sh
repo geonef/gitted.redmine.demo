@@ -6,7 +6,8 @@
 # Install required Debian packages
 _packages=
 _packages="$_packages nginx"
-_packages="$_packages redmine redmine-mysql multiwatch"
+_packages="$_packages mysql-server"
+_packages="$_packages redmine redmine-mysql"
 sysconf_require_packages $_packages
 
 # Fix Nginx
