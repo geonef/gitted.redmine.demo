@@ -9,7 +9,7 @@ _packages="$_packages lighttpd"
 _packages="$_packages redmine redmine-mysql"
 sysconf_require_packages $_packages
 
-# Install Tiny Tiny RSS
+# Install the Redmine instance
 
 # # (re)Start the service through /etc/init.d/tt-rss
 # if service tt-rss status >/dev/null; then
