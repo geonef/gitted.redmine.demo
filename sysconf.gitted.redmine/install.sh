@@ -5,15 +5,36 @@
 
 # Install required Debian packages
 _packages=
-_packages="$_packages lighttpd"
-_packages="$_packages redmine redmine-mysql"
+_packages="$_packages nginx"
+_packages="$_packages redmine redmine-mysql multiwatch"
 sysconf_require_packages $_packages
 
-# Install the Redmine instance
+# Fix Nginx
+_force_nginx_restart=no
+if [ -r /etc/nginx/sites-enabled/default ]; then
+    rm -f /etc/nginx/sites-enabled/default
+    _force_nginx_restart=yes
+fi
+if ps x | grep nginx | grep -vq grep; then
+    if [ $_force_nginx_restart = yes ]; then
+        service nginx restart
+    fi
+else
+    service nginx start
+fi
 
-# # (re)Start the service through /etc/init.d/tt-rss
-# if service tt-rss status >/dev/null; then
-#     service tt-rss restart || nef_fatal "could not restart tt-rss"
-# else
-#     service tt-rss start || nef_fatal "could not start tt-rss"
-# fi
+if [ ! -h /etc/rc3.d/*redmine-fcgi ]; then
+    update-rc.d redmine-fcgi defaults
+fi
+
+# Install the Redmine instance
+# rm -f /etc/lighttpd/lighttpd.conf
+# ln -s cgit.lighttpd.conf /etc/lighttpd/lighttpd.conf
+# service lighttpd restart
+
+# (re)Start the service through /etc/init.d/redmine-fcgi
+if service redmine-fcgi status >/dev/null; then
+    service redmine-fcgi restart || nef_fatal "could not restart redmine-fcgi"
+else
+    service redmine-fcgi start || nef_fatal "could not start redmine-fcgi"
+fi
