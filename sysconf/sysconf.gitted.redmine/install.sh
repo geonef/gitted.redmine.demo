@@ -5,10 +5,11 @@
 
 # Install required Debian packages
 _packages=
-_packages="$_packages nginx"
+_packages="$_packages nginx spawn-fcgi"
 _packages="$_packages mysql-server"
-_packages="$_packages redmine redmine-mysql"
 sysconf_require_packages $_packages
+sysconf_require_packages -t wheezy-backports redmine redmine-mysql
+
 
 # Fix Nginx
 _force_nginx_restart=no
