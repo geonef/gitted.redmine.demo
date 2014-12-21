@@ -51,13 +51,19 @@ stop() {
     echo "Stopping $DESC... "
     log_daemon_msg "Stopping $DESCR" "spawn-fcgi"
 
-    start-stop-daemon --stop --user $USER --exec /usr/bin/ruby
-    log_end_msg $?
+    # start-stop-daemon --stop --user $USER --exec /usr/bin/ruby
+    pids=$(ps aux | grep ^www-data | grep "ruby FASTCGI_SCRIPT_PATH" | awk '{ print $2 }')
+    if [ -n "$pids" ]; then
+        kill $pids
+    else
+        echo "error: not running"
+    fi
 }
 
 status() {
     echo "Status of $DESC... "
-    start-stop-daemon --status --user $USER --exec /usr/bin/ruby
+    # start-stop-daemon --status --user $USER --exec /usr/bin/ruby
+    ps aux | grep ^www-data | grep "ruby FASTCGI_SCRIPT_PATH"
     log_end_msg $?
 }
 
