@@ -5,4 +5,4 @@ export GITTED_MYSQL_DATABASE=demo
 
 [ -r /etc/gitted/sync/defs ] && . /etc/gitted/sync/defs
 
-GITTED_DATA_PATH=$GITTED_MYSQL_DATA_PATH /usr/share/gitted/import/mysql
+GITTED_DATA_PATH=$GITTED_MYSQL_DATA_PATH NEF_LOG_NO_PREFIX=yes /usr/share/gitted/import/mysql
