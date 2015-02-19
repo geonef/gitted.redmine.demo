@@ -20,6 +20,7 @@
 #
 
 [ -z "$nef_command_name" ] && nef_command_name="$(basename "$0")"
+[ -z "$nef_command_prefix" ] && nef_command_prefix="nef_command" # new spec is: "script"
 
 ######################################################################
 # SETTINGS
@@ -47,7 +48,7 @@ nef_log() {
     while [ "$1" != "" ]; do
 
         case "$1" in
-            -p | --prepend) _opt_prepend="$2"; echo "prenddd..$2"; shift; shift ;;
+            -p | --prepend) _opt_prepend="$2"; shift; shift ;;
             -v | --verbose) _opt_verbose=yes; shift ;;
             -d | --debug) _opt_debug=yes; shift ;;
             -*) nef_log "nef_log(): bad option: $1"; shift ;;
@@ -62,8 +63,8 @@ nef_log() {
     local txt="$*"
     local line="$*"
     local prefix="$NEF_LOG_PREFIX"
-    [ -z "$prefix" ] && prefix="$nef_command_name"
-    [ "$NEF_LOG_PREFIX_NOCOLUMN" = yes ] || prefix="${prefix}: "
+    [ -z "$prefix" -a "$NEF_LOG_NO_PREFIX" != yes ] && prefix="$nef_command_name"
+    [ -n "$prefix" -a "$NEF_LOG_PREFIX_NOCOLUMN" != yes ] && prefix="${prefix}: "
     # prefix=$(basename $0)
 
     if [ "x$NEF_LOG_DATE" = xyes ]; then
@@ -175,10 +176,12 @@ nef_fatal_usage() {
 }
 
 nef_show_usage() {
-    [ "$(type -t nef_command_usage)" = "function" ] \
-        || nef_fatal "function 'nef_command_usage' not defined by script $0"
+    local _usage_command=${nef_command_prefix}_usage
 
-    nef_command_usage
+    [ "$(type -t $_usage_command)" = "function" ] \
+        || nef_fatal "function '$_usage_command' not defined by script $0"
+
+    $_usage_command
 }
 
 # Usage: nef_confim "question?" && command...
