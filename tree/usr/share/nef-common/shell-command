@@ -48,7 +48,7 @@ nef_log() {
     while [ "$1" != "" ]; do
 
         case "$1" in
-            -p | --prepend) _opt_prepend="$2"; echo "prenddd..$2"; shift; shift ;;
+            -p | --prepend) _opt_prepend="$2"; shift; shift ;;
             -v | --verbose) _opt_verbose=yes; shift ;;
             -d | --debug) _opt_debug=yes; shift ;;
             -*) nef_log "nef_log(): bad option: $1"; shift ;;
@@ -63,8 +63,8 @@ nef_log() {
     local txt="$*"
     local line="$*"
     local prefix="$NEF_LOG_PREFIX"
-    [ -z "$prefix" ] && prefix="$nef_command_name"
-    [ "$NEF_LOG_PREFIX_NOCOLUMN" = yes ] || prefix="${prefix}: "
+    [ -z "$prefix" -a "$NEF_LOG_NO_PREFIX" != yes ] && prefix="$nef_command_name"
+    [ -n "$prefix" -a "$NEF_LOG_PREFIX_NOCOLUMN" != yes ] && prefix="${prefix}: "
     # prefix=$(basename $0)
 
     if [ "x$NEF_LOG_DATE" = xyes ]; then
