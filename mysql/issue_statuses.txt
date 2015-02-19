@@ -1,0 +1,6 @@
+1	New	0	1	1	\N
+2	In Progress	0	0	2	\N
+3	Resolved	0	0	3	\N
+4	Feedback	0	0	4	\N
+5	Closed	1	0	5	\N
+6	Rejected	1	0	6	\N

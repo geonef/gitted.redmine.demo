@@ -1,0 +1,9 @@
+1	Low	1	0	IssuePriority	1	\N	\N	lowest
+2	Normal	2	1	IssuePriority	1	\N	\N	default
+3	High	3	0	IssuePriority	1	\N	\N	high3
+4	Urgent	4	0	IssuePriority	1	\N	\N	high2
+5	Immediate	5	0	IssuePriority	1	\N	\N	highest
+6	User documentation	1	0	DocumentCategory	1	\N	\N	\N
+7	Technical documentation	2	0	DocumentCategory	1	\N	\N	\N
+8	Design	1	0	TimeEntryActivity	1	\N	\N	\N
+9	Development	2	0	TimeEntryActivity	1	\N	\N	\N
