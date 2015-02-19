@@ -8,7 +8,8 @@
 
 . /usr/share/nef-common/shell-command
 
+
 for script in /etc/gitted/sync/master.*.export; do
     name=$(basename $script)
-    $script 2>&1 | nef_log_pipe "<$name>"
+    $script 2>&1 | NEF_LOG_NO_PREFIX=yes nef_log_pipe "<$name>"
 done

@@ -1,5 +1,6 @@
 
 . /usr/share/nef-common/shell-command || exit 2
+nef_command_init_options
 
 PATH=/sbin:/usr/sbin:$PATH
 

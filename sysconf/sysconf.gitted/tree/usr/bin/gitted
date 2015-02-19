@@ -137,7 +137,9 @@ gitted_run_git_script() {
     for script in /etc/gitted/sync/*.$op; do
         name=$(basename $script)
         export GITTED_GIT_BRANCH=$(echo $name | sed 's/\..*//')
-        $script 2>&1 | nef_log_pipe "<$name>"
+        if [ "$name" = "$GITTED_GIT_BRANCH.$op" ]; then
+            $script 2>&1 | nef_log_pipe # "<$name>"
+        fi
     done
 }
 
@@ -148,7 +150,7 @@ gitted_run_hooks() {
 
     if [ -d $_dir ]; then
         for hook in $(find $_dir -executable -and -not -type d); do
-            $hook | nef_log_pipe "${hook}:"
+            $hook 2>&1 | nef_log_pipe "${hook}:"
         done
     fi
 }

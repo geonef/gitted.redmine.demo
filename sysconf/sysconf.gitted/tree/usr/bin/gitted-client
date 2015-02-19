@@ -6,7 +6,6 @@
 #   20140818 first version by JF Gigand <jf@geonef.fr>
 
 nef_command_name=gitted-client
-# . $(dirname $0)/../share/nef-common/shell-command || exit 2
 gitted_executive_treeish=
 
 ######################################################################
@@ -70,16 +69,21 @@ gitted_command_add() {
         "${args[@]}"
     fi
 
+    local _gitted_branch_name=master
     local _branch_name=$(git symbolic-ref --short HEAD 2>/dev/null)
     if [ -n "$_branch_name" ]; then
-        _branch_name="$_branch_name # or another branch"
+        # _branch_name="$_branch_name"
+        if [ "$_branch_name" != "$_gitted_branch_name" ]; then
+            _branch_name="$_branch_name:master"
+
+        fi
     else
         _branch_name="<branch>"
     fi
     echo
     echo "You may now run:"
     echo -e "\tgit push $_name $_branch_name"
-    echo -e "\tgit pull $_name $_branch_name"
+    echo -e "\tgit pull $_name $_gitted_branch_name"
 }
 
 # command: handle-remote-protocol <name> <remote-command>
@@ -92,6 +96,7 @@ gitted_command_handle-remote-protocol() {
     while [ -n "$1" ]; do
         case "$1" in
             --tree) gitted_executive_treeish=$2; shift; shift ;;
+            --lxc-create-opts) gitted_lxc_create_opts="$2"; shift; shift ;;
             -h|--help) gitted_command_help handle-remote-protocol; return ;;
             -*) gitted_eval_common_option "$1"; shift ;;
             *) _argv=("${_argv[@]}" "$1"); shift ;;
@@ -106,7 +111,7 @@ gitted_command_handle-remote-protocol() {
 
     gitted_ensure_container_running "$_name"
 
-    nef_log "Forwarding command '$_command' to gitted in container '$_name'..."
+    nef_log -v "Forwarding command '$_command' to gitted in container '$_name'..."
     lxc-attach --clear-env -n $_name -- gitted git-remote-command $_command
     local _ip=$(lxc-info -H -n $_name -i)
     nef_log "Container IP address: $_ip"
@@ -295,7 +300,7 @@ gitted_ensure_container_running() {
     _name="$1"
     state=$(gitted_lxc_state $_name)
 
-    nef_log "Container '$_name' is '$state'"
+    nef_log -v "Container '$_name' is '$state'"
 
     if [ $state = MISSING ]; then
         # [ -d "$engine_dir" ] || nef_fatal "container cannot be created as engine dir is not available: $engine_dir"
@@ -313,8 +318,12 @@ gitted_ensure_container_running() {
         #     # https://www.mail-archive.com/lxc-users@lists.linuxcontainers.org/msg01894.html
         # fi
 
-        nef_log "LXC container '$_name' does not exist. Creating one with distrib '$distrib', release '$release'..."
-        lxc-create -n $_name -t download -- -d $distrib -r $release -a amd64 $options >&2 \
+        nef_log "Creating LXC container '$_name' with distrib '$distrib', release '$release'..."
+        if [ -n "$gitted_lxc_create_opts" ]; then
+            nef_log -v "lxc-create extra options: $gitted_lxc_create_opts"
+        fi
+        lxc-create -n $_name $gitted_lxc_create_opts \
+            -t download -- -d $distrib -r $release -a amd64 $options >&2 \
             || nef_fatal "lxc-create failed"
         state=STOPPED
 
@@ -338,7 +347,7 @@ gitted_ensure_container_running() {
     if [ $state = STOPPED ]; then
         nef_log "Starting container in daemon mode..."
         lxc-start -n $_name -d
-        nef_log "Waiting for a few seconds to let it be ready..."
+        nef_log -v "Waiting for a few seconds to let it be ready..."
         sleep 3
 
 
@@ -386,11 +395,24 @@ gitted_container_apply_customs() {
             -- sh -c 'mkdir -p /root/.ssh && cat >/root/.ssh/authorized_keys'
     fi
 
-    # TODO: set GIT config for user.name and user.email
+    # Set GIT config for user.name and user.email
+    local _git_user_name=$(git config --get user.name)
+    local _git_user_email=$(git config --get user.email)
+    if [ -n "$_git_user_name" -a -n "$_git_user_name" ]; then
+        nef_log "set container Git username to '$_git_user_name' and email to '$_git_user_email'"
+        cat <<EOF | lxc-attach --clear-env -n $_name -- sh -c "cat >>/root/.gitconfig"
+[user]
+	name = ${_git_user_name}
+	email = ${_git_user_email}
+EOF
+
+        # lxc-attach --clear-env -n $_name -- git config --global user.name "$_git_user_name"
+        # lxc-attach --clear-env -n $_name -- git config --global user.email "$_git_user_email"
+    fi
 }
 
 gitted_lxc_state() {
-    state=$(lxc-info -sHn $1 | head -n 1)
+    state=$(lxc-info -sHn $1 2>/dev/null | head -n 1)
     [ -z "$state" ] && state=MISSING
     echo $state
 }
