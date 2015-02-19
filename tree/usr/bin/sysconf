@@ -339,15 +339,16 @@ nef_log() {
 
     local txt="$*"
     local line="$*"
-    local prefix="$NEF_LOG_PREFIX"
-    [ -z "$prefix" ] && prefix="$nef_command_name"
+    # local prefix="$NEF_LOG_PREFIX"
+    # [ -z "$prefix" ] && prefix="$nef_command_name"
 
-    if [ "x$NEF_LOG_DATE" = xyes ]; then
-        date="`date +'%Y-%m-%d %H:%M:%S:%N' | sed -E 's/.{6}$//'`"
-        prefix="$prefix $date"
-    fi
+    # if [ "x$NEF_LOG_DATE" = xyes ]; then
+    #     date="`date +'%Y-%m-%d %H:%M:%S:%N' | sed -E 's/.{6}$//'`"
+    #     prefix="$prefix $date"
+    # fi
 
-    line="$prefix: ${_opt_prepend}${line}"
+    # line="$prefix: ${_opt_prepend}${line}"
+    line="${_opt_prepend}${line}"
 
     if [ "$NEF_LOG_FILE" = "" ]; then
         echo "$line" >&2
