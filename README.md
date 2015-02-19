@@ -51,3 +51,30 @@ git pull redmine master
 It's as simple as that. Now you can make a ```git push origin
 master``` to propagate the changes to the upstream remote, or any
 other remote, as usual with Git.
+
+
+## Git sub-tree
+
+### PULL
+```
+git subtree pull -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
+git subtree pull -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
+git subtree pull -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
+git subtree pull -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
+```
+
+### PUSH
+
+```
+git subtree push -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
+git subtree push -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
+git subtree push -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
+git subtree push -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
+```
+
+### ...
+
+To remove a sub-tree directory:
+```
+git filter-branch --index-filter 'git rm --cached --ignore-unmatch -rf sysconf/sysconf.abc' --prune-empty -f HEAD
+```
