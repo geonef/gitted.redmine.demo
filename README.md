@@ -59,7 +59,6 @@ other remote, as usual with Git.
 ```
 git subtree pull -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
 git subtree pull -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
-git subtree pull -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
 git subtree pull -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
 ```
 
@@ -68,7 +67,6 @@ git subtree pull -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf
 ```
 git subtree push -P sysconf/sysconf.base git@github.com:geonef/sysconf.base.git master
 git subtree push -P sysconf/sysconf.gitted git@github.com:geonef/sysconf.gitted.git master
-git subtree push -P sysconf/sysconf.gitted.mysql git@github.com:geonef/sysconf.gitted.mysql.git master
 git subtree push -P sysconf/sysconf.gitted.redmine git@github.com:geonef/sysconf.gitted.redmine.git master
 ```
 
