@@ -1,0 +1,1 @@
+1	admin	1887d911121768a1c9413e245b1f98f4b5fc3b26	Redmine	Admin	admin@example.net	1	1	\N		\N	2015-02-19 21:58:36	2015-02-19 21:58:36	User	\N	all	fb82f1aace17fc84a2e0b6b67068abed	0
