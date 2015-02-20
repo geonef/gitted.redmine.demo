@@ -323,7 +323,8 @@ gitted_ensure_container_running() {
             nef_log -v "lxc-create extra options: $gitted_lxc_create_opts"
         fi
         lxc-create -n $_name $gitted_lxc_create_opts \
-            -t download -- -d $distrib -r $release -a amd64 $options >&2 \
+            -t download -- -d $distrib -r $release -a amd64 $options \
+            2>&1 | NEF_LOG_NO_PREFIX=yes nef_log_pipe "lxc-create:" \
             || nef_fatal "lxc-create failed"
         state=STOPPED
 
@@ -378,9 +379,9 @@ gitted_ensure_container_running() {
         nef_log "sysconf is not defined. extracting from commit $gitted_executive_treeish"
         git archive $gitted_executive_treeish sysconf/ \
             | lxc-attach --clear-env -n $_name -- tar x -C / >&2
-        lxc-attach --clear-env -n $_name -- \
+        NEF_LOG_NO_PREFIX=yes lxc-attach --clear-env -n $_name -- \
             /sysconf/sysconf.base/tree/usr/bin/sysconf compile install update \
-            2>&1 | nef_log_pipe "sysconf@$_name:"
+            2>&1 | NEF_LOG_NO_PREFIX=yes nef_log_pipe "sysconf@$_name:"
     }
 }
 
@@ -497,14 +498,16 @@ nef_log() {
 
     local txt="$*"
     local line="$*"
-    local prefix=$(basename $0)
+    local prefix="$NEF_LOG_PREFIX"
+    [ -z "$prefix" -a "$NEF_LOG_NO_PREFIX" != yes ] && prefix=$(basename $0)
+    [ -n "$prefix" -a "$NEF_LOG_PREFIX_NOCOLUMN" != yes ] && prefix="${prefix}: "
 
     if [ "x$NEF_LOG_DATE" = xyes ]; then
         date="`date +'%Y-%m-%d %H:%M:%S:%N' | sed -E 's/.{6}$//'`"
         prefix="$prefix $date"
     fi
 
-    line="$prefix: ${_opt_prepend}${line}"
+    line="${prefix}${_opt_prepend}${line}"
 
     if [ "$NEF_LOG_FILE" = "" ]; then
         echo "$line" >&2

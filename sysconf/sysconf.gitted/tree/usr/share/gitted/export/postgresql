@@ -13,7 +13,7 @@
 # Allowed GITTED_POSTGRESQL_FORMAT values: sql
 [ -z "$GITTED_POSTGRESQL_FORMAT" ] && GITTED_POSTGRESQL_FORMAT=sql
 
-
+cd /
 state_ref=$(gitted_state_ref_name postgresql)
 
 # 0=has new ops

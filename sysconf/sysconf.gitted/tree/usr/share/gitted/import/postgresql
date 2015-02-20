@@ -8,6 +8,8 @@
 [ -z "$GITTED_POSTGRESQL_DATABASE" ] && nef_fatal "missing variable: GITTED_POSTGRESQL_DATABASE"
 [ -z "$GITTED_POSTGRESQL_USER" ] && GITTED_POSTGRESQL_USER=postgres
 
+cd /
+
 _psql() {
     sudo -u postgres psql \
         -X \
